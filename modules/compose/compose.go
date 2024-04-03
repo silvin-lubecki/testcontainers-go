@@ -48,6 +48,8 @@ type stackUpOptions struct {
 	RecreateDependencies string
 	// Project is the compose project used to define this app. Might be nil if user ran command just with project name
 	Project *types.Project
+	// Quiet
+	Quiet bool
 }
 
 type StackUpOption interface {

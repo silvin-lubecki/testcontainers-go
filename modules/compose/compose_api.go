@@ -16,8 +16,8 @@ import (
 	"github.com/docker/docker/client"
 	"golang.org/x/sync/errgroup"
 
-	testcontainers "github.com/testcontainers/testcontainers-go"
-	wait "github.com/testcontainers/testcontainers-go/wait"
+	"github.com/testcontainers/testcontainers-go"
+	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 type stackUpOptionFunc func(s *stackUpOptions)
@@ -66,6 +66,13 @@ type Wait bool
 
 func (w Wait) applyToStackUp(o *stackUpOptions) {
 	o.Wait = bool(w)
+}
+
+// Quiet removes output
+type Quiet bool
+
+func (q Quiet) applyToStackUp(o *stackUpOptions) {
+	o.Quiet = bool(q)
 }
 
 type RemoveVolumes bool
@@ -218,6 +225,7 @@ func (d *dockerCompose) Up(ctx context.Context, opts ...StackUpOption) error {
 
 	err = d.composeService.Up(ctx, d.project, api.UpOptions{
 		Create: api.CreateOptions{
+			QuietPull: upOptions.Quiet,
 			Build: &api.BuildOptions{
 				Services: upOptions.Services,
 			},
